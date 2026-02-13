@@ -653,7 +653,6 @@
         <button class="btn mini ghost" id="closeResult">閉じる</button>
       </div>
       <div class="bd">
-        <!-- ここをJSで埋める -->
         <div class="result-hero">
           <div class="result-title" id="resultTitle">—</div>
           <div class="result-line" id="resultLine">—</div>
@@ -675,7 +674,7 @@
           <!-- rows injected -->
         </div>
 
-        <p class="note">※煽りは兄弟ノリのジョーク仕様。やばい方向にしたければ文言だけ差し替えればOK。</p>
+        <p class="note">※煽りは兄弟ノリのジョーク仕様（強め）。</p>
       </div>
       <div class="ft">
         <button class="btn" id="resultCopy">結果をコピー</button>
@@ -904,10 +903,11 @@
       const start = -Math.PI/2;
       const itsukiAngle = (itsuki/100) * Math.PI * 2;
 
-      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--itsuki").trim();
+      /* ★ここが要望：色を固定（いつき＝赤 / ゆずき＝青） */
+      ctx.strokeStyle = "#EF4444"; // いつき＝赤（固定）
       ctx.beginPath(); ctx.arc(cx,cy,r,start,start+itsukiAngle); ctx.stroke();
 
-      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--yuzuki").trim();
+      ctx.strokeStyle = "#3B82F6"; // ゆずき＝青（固定）
       ctx.beginPath(); ctx.arc(cx,cy,r,start+itsukiAngle,start+Math.PI*2); ctx.stroke();
 
       ctx.fillStyle = "rgba(234,240,255,.98)";
@@ -1015,13 +1015,11 @@
     function buildResultScreen(){
       const { itsuki, yuzuki, w, l, t } = calcRates();
 
-      // 競技別まとめ（試合数多い順）
       const rows = GAMES.map(g=>{
         const s = state.stats[g];
         return { game:g, iw:s.win, yz:s.loss, total:s.win+s.loss };
       }).filter(r=>r.total>0).sort((a,b)=>b.total-a.total);
 
-      // タイトル＆煽り（軽め）
       let title = "まだ勝負してへんやん。";
       let line  = "とりあえず1試合やってから結果発表しよか。";
 
@@ -1034,12 +1032,13 @@
           const loserName  = (w>l) ? PLAYER_B : PLAYER_A;
           const diff = Math.abs(w-l);
 
+          /* ★ここが要望：強め煽り */
           const taunts = [
-            `【${loserName}】今日は“伸びしろ”多めやな？`,
-            `【${loserName}】負け数も才能ってことにしとこか。`,
-            `【${loserName}】次は本気出すって何回言うねんｗ`,
-            `【${loserName}】悔しかったら勝って黙らせてみ？`,
-            `【${loserName}】運も実力のうち、って知ってる？`
+            `言い訳禁止。結果がすべて。負けたんは【${loserName}】や。`,
+            `【${loserName}】敗北確定。次勝つまで口開かんでええ。`,
+            `【${loserName}】その実力で挑んだ勇気だけは認めたる。`,
+            `【${loserName}】負け癖ついてへん？練習しよか。`,
+            `【${loserName}】勝つ気ある？あるなら数字で見せて。`
           ];
           const pick = taunts[(t + diff) % taunts.length];
 
@@ -1056,7 +1055,6 @@
       $("#rRates").textContent = `${PLAYER_A} ${fmtPct(itsuki)} / ${PLAYER_B} ${fmtPct(yuzuki)}`;
 
       const table = $("#resultTable");
-      // head以外を削除
       table.querySelectorAll(".result-row:not(.head)").forEach(n=>n.remove());
 
       if(rows.length===0){
@@ -1102,7 +1100,6 @@
         await navigator.clipboard.writeText(text);
         alert("結果をコピーしたで！");
       }catch{
-        // フォールバック（古い環境用）
         const ta = document.createElement("textarea");
         ta.value = text;
         document.body.appendChild(ta);
