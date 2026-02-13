@@ -11,10 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
   <style>
-    /* =========================
-       Theme（お任せ：ミニマルで上品）
-       4色：BG / Surface / Text / Muted + Accent 2色（赤/青）
-       ========================= */
     :root{
       --bg:#0B1020;
       --surface: rgba(255,255,255,.06);
@@ -51,12 +47,9 @@
     .wrap{
       max-width: 720px;
       margin: 0 auto;
-      padding: 14px 12px 86px; /* bottom bar 分 */
+      padding: 14px 12px 96px;
     }
 
-    /* =========================
-       Header
-       ========================= */
     header{
       display:flex;
       flex-direction:column;
@@ -94,9 +87,6 @@
     }
     .chip strong{ color: var(--text); font-weight: 800; }
 
-    /* =========================
-       Cards
-       ========================= */
     .card{
       background: linear-gradient(180deg, var(--surface), var(--surface2));
       border:1px solid var(--border);
@@ -126,9 +116,6 @@
     }
     .card .bd{ padding: 12px; }
 
-    /* =========================
-       Buttons
-       ========================= */
     .btn{
       appearance:none;
       border:1px solid var(--border);
@@ -154,9 +141,6 @@
     .btn.ghost{ color: var(--muted); background: rgba(255,255,255,.03); }
     .mini{ padding: 9px 10px; font-size: 13px; border-radius: 12px; }
 
-    /* =========================
-       KPI
-       ========================= */
     .kpis{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -202,9 +186,6 @@
     .dot.red{ background: var(--itsuki); }
     .dot.blue{ background: var(--yuzuki); }
 
-    /* =========================
-       Game list (mobile cards)
-       ========================= */
     .glist{
       display:flex;
       flex-direction:column;
@@ -252,7 +233,7 @@
       display:block;
       height:100%;
       width:0%;
-      background: linear-gradient(90deg, rgba(239,68,68,.95), rgba(59,130,246,.55)); /* いつき寄りに赤始点 */
+      background: linear-gradient(90deg, rgba(239,68,68,.95), rgba(59,130,246,.55));
       border-radius: 999px;
       transition: width .2s ease;
     }
@@ -277,9 +258,6 @@
       border-color: rgba(59,130,246,.45);
     }
 
-    /* =========================
-       Canvas (Donut only)
-       ========================= */
     canvas{
       width:100%;
       height: 210px;
@@ -287,7 +265,6 @@
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.03);
     }
-
     .legend{
       display:flex;
       gap:10px;
@@ -298,9 +275,6 @@
       align-items:center;
     }
 
-    /* =========================
-       Log
-       ========================= */
     .log-controls{
       display:flex;
       gap:10px;
@@ -359,9 +333,6 @@
     .note{ margin-top: 10px; color: var(--muted); font-size: 12px; }
     .help{ color: var(--muted); font-size: 12px; margin-top: -4px; }
 
-    /* =========================
-       Select (white bg + black text)
-       ========================= */
     select.select-black{
       width:100%;
       border-radius: 12px;
@@ -390,9 +361,7 @@
     }
     textarea{ min-height: 86px; resize: vertical; }
 
-    /* =========================
-       Bottom bar（ボタンは1つだけ）
-       ========================= */
+    /* Bottom bar（＋記録＋結果発表） */
     .bottom-bar{
       position: fixed;
       left:0; right:0; bottom:0;
@@ -405,19 +374,17 @@
     .bottom-inner{
       max-width: 720px;
       margin: 0 auto;
-      display:flex;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
       gap:10px;
     }
     .bottom-inner .btn{
-      flex:1;
       padding: 12px 12px;
       border-radius: 16px;
       font-size: 15px;
     }
 
-    /* =========================
-       Modal
-       ========================= */
+    /* Modal */
     .modal-backdrop{
       position: fixed;
       inset:0;
@@ -461,15 +428,79 @@
     }
     @media (max-width: 420px){
       .row2{ grid-template-columns: 1fr; }
+      .bottom-inner{ grid-template-columns: 1fr; }
     }
+
+    /* ===== 結果発表 UI ===== */
+    .result-hero{
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 12px;
+      display:grid;
+      gap:8px;
+    }
+    .result-title{
+      font-weight: 900;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+    .result-line{
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .result-score{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top: 4px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .pill strong{ color: var(--text); }
+    .pill .sw{ width:10px;height:10px;border-radius:999px; display:inline-block; border:1px solid rgba(255,255,255,.12); }
+    .sw.red{ background: var(--itsuki); }
+    .sw.blue{ background: var(--yuzuki); }
+
+    .result-table{
+      margin-top: 10px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      overflow:hidden;
+    }
+    .result-row{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr .8fr .8fr;
+      gap:8px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.03);
+      border-top: 1px solid rgba(255,255,255,.08);
+      align-items:center;
+      font-size: 13px;
+    }
+    .result-row.head{
+      background: rgba(255,255,255,.05);
+      font-weight: 800;
+      color: var(--muted);
+      border-top:none;
+    }
+    .right{ text-align:right; }
+    .game-name{ font-weight: 900; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <!-- =========================
-         Header
-         ========================= -->
     <header>
       <h1>【いつき VS ゆずき】スポッチャ 1v1 勝敗トラッカー</h1>
       <p class="sub">勝率は「いつき＋ゆずき＝100%」で固定。比率も赤（いつき）×青（ゆずき）で見える化。</p>
@@ -479,9 +510,6 @@
       </div>
     </header>
 
-    <!-- =========================
-         Summary
-         ========================= -->
     <section class="card">
       <div class="hd">
         <h2>サマリー</h2>
@@ -517,9 +545,6 @@
       </div>
     </section>
 
-    <!-- =========================
-         Games
-         ========================= -->
     <section class="card">
       <div class="hd">
         <h2>競技ごとの勝敗</h2>
@@ -531,9 +556,6 @@
       </div>
     </section>
 
-    <!-- =========================
-         Donut: ratio
-         ========================= -->
     <section class="card">
       <div class="hd">
         <h2>勝ち負けの比率</h2>
@@ -548,9 +570,6 @@
       </div>
     </section>
 
-    <!-- =========================
-         Log
-         ========================= -->
     <section class="card">
       <div class="hd">
         <h2>最近の試合ログ</h2>
@@ -568,9 +587,6 @@
       </div>
     </section>
 
-    <!-- =========================
-         Data management
-         ========================= -->
     <section class="card">
       <div class="hd">
         <h2>データ管理</h2>
@@ -583,18 +599,15 @@
     </section>
   </div>
 
-  <!-- =========================
-       Bottom bar（＋記録だけ）
-       ========================= -->
+  <!-- Bottom bar（＋記録＋結果発表） -->
   <div class="bottom-bar">
     <div class="bottom-inner">
       <button class="btn primary" id="openAdd">＋ 1試合を記録（メモ付き）</button>
+      <button class="btn" id="openResult">🏁 結果発表</button>
     </div>
   </div>
 
-  <!-- =========================
-       Modal：1試合の詳細記録
-       ========================= -->
+  <!-- Modal：1試合の詳細記録 -->
   <div class="modal-backdrop" id="backdrop" role="dialog" aria-modal="true" aria-label="試合を記録">
     <div class="modal">
       <div class="hd">
@@ -632,27 +645,57 @@
     </div>
   </div>
 
+  <!-- Modal：結果発表（集計まとめ＋煽り） -->
+  <div class="modal-backdrop" id="resultBackdrop" role="dialog" aria-modal="true" aria-label="結果発表">
+    <div class="modal">
+      <div class="hd">
+        <h3>🏁 結果発表</h3>
+        <button class="btn mini ghost" id="closeResult">閉じる</button>
+      </div>
+      <div class="bd">
+        <!-- ここをJSで埋める -->
+        <div class="result-hero">
+          <div class="result-title" id="resultTitle">—</div>
+          <div class="result-line" id="resultLine">—</div>
+
+          <div class="result-score">
+            <span class="pill"><span class="sw red"></span>いつき <strong class="mono" id="rItsukiWins">0</strong></span>
+            <span class="pill"><span class="sw blue"></span>ゆずき <strong class="mono" id="rYuzukiWins">0</strong></span>
+            <span class="pill mono" id="rRates">0% / 0%</span>
+          </div>
+        </div>
+
+        <div class="result-table" id="resultTable">
+          <div class="result-row head">
+            <div>競技</div>
+            <div class="right">いつき</div>
+            <div class="right">ゆずき</div>
+            <div class="right">試合数</div>
+          </div>
+          <!-- rows injected -->
+        </div>
+
+        <p class="note">※煽りは兄弟ノリのジョーク仕様。やばい方向にしたければ文言だけ差し替えればOK。</p>
+      </div>
+      <div class="ft">
+        <button class="btn" id="resultCopy">結果をコピー</button>
+        <button class="btn primary" id="resultReset">このまま全リセット</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    /* =========================
-       Fixed matchup
-       ========================= */
     const PLAYER_A = "いつき";
     const PLAYER_B = "ゆずき";
 
-    /* =========================
-       Games（その他あり）
-       ========================= */
     const GAMES = [
       "バスケ","サッカー","バッティング","卓球","バドミントン","テニス","バレー","ダーツ",
       "アーチェリー","ビリヤード","エアホッケー","マリオカート","太鼓の達人","ワニワニパニック","ガンシューティング",
       "その他"
     ];
 
-    const STORAGE_KEY = "spotcha_1v1_tracker_mobile_v3_clean";
+    const STORAGE_KEY = "spotcha_1v1_tracker_mobile_v4_with_result";
 
-    /* =========================
-       State: win=いつき勝ち / loss=ゆずき勝ち
-       ========================= */
     function defaultState(){
       const stats = {};
       for(const g of GAMES) stats[g] = { win:0, loss:0 };
@@ -666,7 +709,6 @@
         const parsed = JSON.parse(raw);
 
         const st = defaultState();
-
         if(parsed?.stats){
           for(const g of Object.keys(st.stats)){
             const s = parsed.stats[g];
@@ -676,7 +718,6 @@
             }
           }
         }
-
         if(Array.isArray(parsed?.log)){
           st.log = parsed.log.slice(0,100).filter(x => x && x.game && (x.winner==="itsuki"||x.winner==="yuzuki"));
         }
@@ -692,9 +733,6 @@
 
     let state = loadState();
 
-    /* =========================
-       Helpers
-       ========================= */
     const $ = (sel, el=document) => el.querySelector(sel);
     function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
 
@@ -727,25 +765,16 @@
         .replaceAll("'","&#039;");
     }
 
-    /* =========================
-       Rates (sum to 100)
-       ========================= */
     function calcRates(){
       const w = totalItsuki();
       const l = totalYuzuki();
       const t = w + l;
-
-      if(t === 0){
-        return { itsuki: 0, yuzuki: 0, w, l, t };
-      }
+      if(t === 0) return { itsuki: 0, yuzuki: 0, w, l, t };
       const itsukiRate = (w / t) * 100;
-      const yuzukiRate = 100 - itsukiRate; // ←合計100にする
+      const yuzukiRate = 100 - itsukiRate;
       return { itsuki: itsukiRate, yuzuki: yuzukiRate, w, l, t };
     }
 
-    /* =========================
-       Render: header + summary
-       ========================= */
     function renderHeader(){
       $("#totalMatches").textContent = totalMatches();
       $("#matchupLabel").textContent = `${PLAYER_A} VS ${PLAYER_B}`;
@@ -753,19 +782,13 @@
 
     function renderSummary(){
       const {itsuki, yuzuki, w, l} = calcRates();
-
       $("#sumWins").textContent = w;
       $("#sumLosses").textContent = l;
-
       $("#rateItsuki").textContent = fmtPct(itsuki);
       $("#rateYuzuki").textContent = fmtPct(yuzuki);
-
       $("#ratioText").textContent = `${w} : ${l}`;
     }
 
-    /* =========================
-       Render: game list
-       ========================= */
     function renderGameList(){
       const glist = $("#glist");
       glist.innerHTML = "";
@@ -812,9 +835,6 @@
       });
     }
 
-    /* =========================
-       Add / Undo (ログも連動)
-       ========================= */
     function quickAdd(game, winner){
       if(winner==="itsuki") state.stats[game].win++;
       else state.stats[game].loss++;
@@ -847,9 +867,6 @@
       renderAll();
     }
 
-    /* =========================
-       Donut: red vs blue, sum=100
-       ========================= */
     function drawDonut(){
       const canvas = $("#donut");
       const ctx = canvas.getContext("2d");
@@ -869,7 +886,6 @@
       const r = Math.min(W,H) * 0.33;
       const ring = r * 0.42;
 
-      // base ring
       ctx.lineWidth = ring;
       ctx.strokeStyle = "rgba(255,255,255,.10)";
       ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
@@ -888,15 +904,12 @@
       const start = -Math.PI/2;
       const itsukiAngle = (itsuki/100) * Math.PI * 2;
 
-      // itsuki (red)
       ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--itsuki").trim();
       ctx.beginPath(); ctx.arc(cx,cy,r,start,start+itsukiAngle); ctx.stroke();
 
-      // yuzuki (blue)
       ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--yuzuki").trim();
       ctx.beginPath(); ctx.arc(cx,cy,r,start+itsukiAngle,start+Math.PI*2); ctx.stroke();
 
-      // center text
       ctx.fillStyle = "rgba(234,240,255,.98)";
       ctx.font = "900 18px Inter, sans-serif";
       ctx.textAlign = "center";
@@ -907,9 +920,6 @@
       ctx.fillText(`${PLAYER_A} ${w} - ${PLAYER_B} ${l}（合計 ${t}）`, cx, cy+18);
     }
 
-    /* =========================
-       Log render
-       ========================= */
     function renderFilterOptions(){
       const sel = $("#filterGame");
       const current = sel.value || "all";
@@ -946,9 +956,7 @@
       }).join("");
     }
 
-    /* =========================
-       Modal
-       ========================= */
+    /* ===== モーダル（記録） ===== */
     function openModal(){
       $("#backdrop").style.display = "grid";
       $("#mNote").focus();
@@ -974,7 +982,7 @@
 
       $("#saveMatch").addEventListener("click", ()=>{
         const game = $("#mGame").value;
-        const winner = $("#mWinner").value; // itsuki / yuzuki
+        const winner = $("#mWinner").value;
         const note = ($("#mNote").value || "").trim();
 
         if(winner === "itsuki") state.stats[game].win++;
@@ -995,9 +1003,117 @@
       });
     }
 
-    /* =========================
-       Controls
-       ========================= */
+    /* ===== 結果発表（集計＋煽り） ===== */
+    function openResult(){
+      buildResultScreen();
+      $("#resultBackdrop").style.display = "grid";
+    }
+    function closeResult(){
+      $("#resultBackdrop").style.display = "none";
+    }
+
+    function buildResultScreen(){
+      const { itsuki, yuzuki, w, l, t } = calcRates();
+
+      // 競技別まとめ（試合数多い順）
+      const rows = GAMES.map(g=>{
+        const s = state.stats[g];
+        return { game:g, iw:s.win, yz:s.loss, total:s.win+s.loss };
+      }).filter(r=>r.total>0).sort((a,b)=>b.total-a.total);
+
+      // タイトル＆煽り（軽め）
+      let title = "まだ勝負してへんやん。";
+      let line  = "とりあえず1試合やってから結果発表しよか。";
+
+      if(t>0){
+        if(w === l){
+          title = "引き分け！これはこれでアツい。";
+          line  = `どっちも同じだけ勝ってる。次の1勝でマウント取れるで。`;
+        } else {
+          const winnerName = (w>l) ? PLAYER_A : PLAYER_B;
+          const loserName  = (w>l) ? PLAYER_B : PLAYER_A;
+          const diff = Math.abs(w-l);
+
+          const taunts = [
+            `【${loserName}】今日は“伸びしろ”多めやな？`,
+            `【${loserName}】負け数も才能ってことにしとこか。`,
+            `【${loserName}】次は本気出すって何回言うねんｗ`,
+            `【${loserName}】悔しかったら勝って黙らせてみ？`,
+            `【${loserName}】運も実力のうち、って知ってる？`
+          ];
+          const pick = taunts[(t + diff) % taunts.length];
+
+          title = `勝者：${winnerName} 🎉`;
+          line  = `${winnerName}が ${diff}勝差でリード中。${pick}`;
+        }
+      }
+
+      $("#resultTitle").textContent = title;
+      $("#resultLine").textContent  = line;
+
+      $("#rItsukiWins").textContent = w;
+      $("#rYuzukiWins").textContent = l;
+      $("#rRates").textContent = `${PLAYER_A} ${fmtPct(itsuki)} / ${PLAYER_B} ${fmtPct(yuzuki)}`;
+
+      const table = $("#resultTable");
+      // head以外を削除
+      table.querySelectorAll(".result-row:not(.head)").forEach(n=>n.remove());
+
+      if(rows.length===0){
+        const empty = document.createElement("div");
+        empty.className = "result-row";
+        empty.innerHTML = `<div class="game-name">—</div><div class="right">—</div><div class="right">—</div><div class="right">—</div>`;
+        table.appendChild(empty);
+      } else {
+        for(const r of rows){
+          const el = document.createElement("div");
+          el.className = "result-row";
+          el.innerHTML = `
+            <div class="game-name">${r.game}</div>
+            <div class="right mono">${r.iw}</div>
+            <div class="right mono">${r.yz}</div>
+            <div class="right mono">${r.total}</div>
+          `;
+          table.appendChild(el);
+        }
+      }
+    }
+
+    async function copyResult(){
+      const { itsuki, yuzuki, w, l, t } = calcRates();
+      const lines = [];
+      lines.push(`【結果発表】${PLAYER_A} vs ${PLAYER_B}`);
+      lines.push(`合計：${w} - ${l}（${t}試合）`);
+      lines.push(`勝率：${PLAYER_A} ${fmtPct(itsuki)} / ${PLAYER_B} ${fmtPct(yuzuki)}`);
+      lines.push("");
+      lines.push("【競技別】");
+      const rows = GAMES.map(g=>{
+        const s = state.stats[g];
+        const total = s.win+s.loss;
+        return {g, w:s.win, l:s.loss, total};
+      }).filter(x=>x.total>0).sort((a,b)=>b.total-a.total);
+
+      if(rows.length===0) lines.push("まだ記録なし");
+      else rows.forEach(r=>lines.push(`${r.g}：${PLAYER_A} ${r.w} - ${PLAYER_B} ${r.l}（${r.total}）`));
+
+      const text = lines.join("\n");
+
+      try{
+        await navigator.clipboard.writeText(text);
+        alert("結果をコピーしたで！");
+      }catch{
+        // フォールバック（古い環境用）
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        alert("結果をコピーしたで！");
+      }
+    }
+
+    /* Controls */
     function bindControls(){
       $("#filterGame").addEventListener("change", renderLog);
 
@@ -1016,11 +1132,25 @@
         saveState();
         renderAll();
       });
+
+      // 結果発表
+      $("#openResult").addEventListener("click", openResult);
+      $("#closeResult").addEventListener("click", closeResult);
+      $("#resultBackdrop").addEventListener("click", (e)=>{
+        if(e.target.id === "resultBackdrop") closeResult();
+      });
+
+      $("#resultCopy").addEventListener("click", copyResult);
+      $("#resultReset").addEventListener("click", ()=>{
+        const ok = confirm("このまま全データリセットするで？（勝敗・ログ全部消える）");
+        if(!ok) return;
+        state = defaultState();
+        saveState();
+        closeResult();
+        renderAll();
+      });
     }
 
-    /* =========================
-       Render all
-       ========================= */
     function renderAll(){
       renderHeader();
       renderSummary();
@@ -1032,13 +1162,20 @@
 
     window.addEventListener("resize", drawDonut);
 
-    /* =========================
-       Boot
-       ========================= */
+    /* Boot */
     $("#matchupLabel").textContent = `${PLAYER_A} VS ${PLAYER_B}`;
     bindModal();
     bindControls();
     renderAll();
+
+    // 記録モーダル閉じる操作
+    $("#backdrop").addEventListener("click", (e)=>{
+      if(e.target.id === "backdrop") closeModal();
+    });
+    $("#resultBackdrop").addEventListener("click", (e)=>{
+      if(e.target.id === "resultBackdrop") closeResult();
+    });
   </script>
 </body>
 </html>
+
