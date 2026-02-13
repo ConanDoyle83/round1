@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>【いつき VS ゆずき】スポッチャ 1v1 勝敗トラッカー（スマホ最適）</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================
+       Theme（お任せ：ミニマルで上品）
+       4色：BG / Surface / Text / Muted + Accent 2色（赤/青）
+       ========================= */
+    :root{
+      --bg:#0B1020;
+      --surface: rgba(255,255,255,.06);
+      --surface2: rgba(255,255,255,.04);
+      --text:#EAF0FF;
+      --muted:#9AA6C3;
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 12px 30px rgba(0,0,0,.45);
+      --radius: 18px;
+
+      /* 比率カラー（指定） */
+      --itsuki: #EF4444; /* 赤 */
+      --yuzuki: #3B82F6; /* 青 */
+
+      /* select は要望：白背景＋黒文字 */
+      --select-bg:#FFFFFF;
+      --select-text:#000000;
+      --select-border: rgba(0,0,0,.12);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 10% 0%, rgba(59,130,246,.20), transparent 60%),
+        radial-gradient(1100px 650px at 95% 15%, rgba(239,68,68,.18), transparent 60%),
+        linear-gradient(180deg, #070A14 0%, #0B1020 55%, #0A0F1E 100%);
+      line-height: 1.6;
+    }
+
+    .wrap{
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 14px 12px 86px; /* bottom bar 分 */
+    }
+
+    /* =========================
+       Header
+       ========================= */
+    header{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-bottom: 12px;
+    }
+    h1{
+      margin:0;
+      font-size: clamp(22px, 6vw, 30px);
+      letter-spacing:-0.02em;
+      line-height:1.12;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .chipline{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 13px;
+      backdrop-filter: blur(8px);
+    }
+    .chip strong{ color: var(--text); font-weight: 800; }
+
+    /* =========================
+       Cards
+       ========================= */
+    .card{
+      background: linear-gradient(180deg, var(--surface), var(--surface2));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-top: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .card .hd{
+      padding: 12px 12px 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .card .hd h2{
+      margin:0;
+      font-size: 15px;
+      letter-spacing:-0.01em;
+    }
+    .card .hd .hint{
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .card .bd{ padding: 12px; }
+
+    /* =========================
+       Buttons
+       ========================= */
+    .btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-weight: 800;
+      font-size: 14px;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(239,68,68,.24), rgba(59,130,246,.18));
+      border-color: rgba(255,255,255,.14);
+    }
+    .btn.ghost{ color: var(--muted); background: rgba(255,255,255,.03); }
+    .mini{ padding: 9px 10px; font-size: 13px; border-radius: 12px; }
+
+    /* =========================
+       KPI
+       ========================= */
+    .kpis{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .kpi{
+      padding: 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+    .kpi .label{ color: var(--muted); font-size: 12px; }
+    .kpi .value{
+      margin-top: 4px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    .mono{ font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1; }
+
+    .split{
+      display:flex;
+      gap:8px;
+      margin-top: 8px;
+      flex-wrap:wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      display:inline-block;
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .dot.red{ background: var(--itsuki); }
+    .dot.blue{ background: var(--yuzuki); }
+
+    /* =========================
+       Game list (mobile cards)
+       ========================= */
+    .glist{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .gitem{
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .gitem-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .gname{ font-weight: 900; font-size: 15px; }
+    .nums{
+      display:flex;
+      gap:10px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .nums b{ color: var(--text); }
+
+    .rate{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .bar{
+      height: 10px;
+      flex:1;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(239,68,68,.95), rgba(59,130,246,.55)); /* いつき寄りに赤始点 */
+      border-radius: 999px;
+      transition: width .2s ease;
+    }
+    .pct{
+      width: 56px;
+      text-align:right;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .gactions{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .btn.itsuki{
+      background: rgba(239,68,68,.16);
+      border-color: rgba(239,68,68,.45);
+    }
+    .btn.yuzuki{
+      background: rgba(59,130,246,.16);
+      border-color: rgba(59,130,246,.45);
+    }
+
+    /* =========================
+       Canvas (Donut only)
+       ========================= */
+    canvas{
+      width:100%;
+      height: 210px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+
+    .legend{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 10px;
+      align-items:center;
+    }
+
+    /* =========================
+       Log
+       ========================= */
+    .log-controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom: 10px;
+    }
+    .log{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .log-item{
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 10px 12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .log-item .left{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .log-item .meta{
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .log-item .main{
+      font-weight: 900;
+      font-size: 14px;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      height: fit-content;
+    }
+    .tag strong{ color: var(--text); }
+
+    .note{ margin-top: 10px; color: var(--muted); font-size: 12px; }
+    .help{ color: var(--muted); font-size: 12px; margin-top: -4px; }
+
+    /* =========================
+       Select (white bg + black text)
+       ========================= */
+    select.select-black{
+      width:100%;
+      border-radius: 12px;
+      border: 1px solid var(--select-border);
+      background: var(--select-bg);
+      color: var(--select-text);
+      padding: 10px 12px;
+      outline:none;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    select.select-black option{
+      color: var(--select-text);
+      background: var(--select-bg);
+    }
+
+    textarea, .input{
+      width:100%;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 10px 12px;
+      outline:none;
+      font-size: 14px;
+    }
+    textarea{ min-height: 86px; resize: vertical; }
+
+    /* =========================
+       Bottom bar（ボタンは1つだけ）
+       ========================= */
+    .bottom-bar{
+      position: fixed;
+      left:0; right:0; bottom:0;
+      padding: 10px 12px 12px;
+      background: linear-gradient(180deg, rgba(7,10,20,0), rgba(7,10,20,.92) 30%, rgba(7,10,20,.98));
+      backdrop-filter: blur(12px);
+      z-index: 40;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .bottom-inner{
+      max-width: 720px;
+      margin: 0 auto;
+      display:flex;
+      gap:10px;
+    }
+    .bottom-inner .btn{
+      flex:1;
+      padding: 12px 12px;
+      border-radius: 16px;
+      font-size: 15px;
+    }
+
+    /* =========================
+       Modal
+       ========================= */
+    .modal-backdrop{
+      position: fixed;
+      inset:0;
+      display:none;
+      place-items:end center;
+      padding: 12px;
+      background: rgba(0,0,0,.62);
+      z-index: 50;
+    }
+    .modal{
+      width: min(720px, 100%);
+      background: rgba(18,24,38,.92);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(14px);
+    }
+    .modal .hd{
+      padding: 12px 12px 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .modal .hd h3{ margin:0; font-size: 15px; }
+    .modal .bd{ padding: 12px; }
+    .modal .ft{
+      padding: 12px;
+      display:flex;
+      gap:10px;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+    .modal .ft .btn{ flex:1; }
+
+    .form{ display:grid; gap: 10px; }
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 420px){
+      .row2{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- =========================
+         Header
+         ========================= -->
+    <header>
+      <h1>【いつき VS ゆずき】スポッチャ 1v1 勝敗トラッカー</h1>
+      <p class="sub">勝率は「いつき＋ゆずき＝100%」で固定。比率も赤（いつき）×青（ゆずき）で見える化。</p>
+      <div class="chipline">
+        <span class="chip">合計試合数：<strong id="totalMatches">0</strong></span>
+        <span class="chip">対戦：<strong id="matchupLabel">いつき VS ゆずき</strong></span>
+      </div>
+    </header>
+
+    <!-- =========================
+         Summary
+         ========================= -->
+    <section class="card">
+      <div class="hd">
+        <h2>サマリー</h2>
+        <div class="hint">全競技合算</div>
+      </div>
+      <div class="bd">
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">いつきの勝ち</div>
+            <div class="value mono" id="sumWins">0</div>
+          </div>
+          <div class="kpi">
+            <div class="label">ゆずきの勝ち</div>
+            <div class="value mono" id="sumLosses">0</div>
+          </div>
+          <div class="kpi">
+            <div class="label">いつき勝率</div>
+            <div class="value mono" id="rateItsuki">0%</div>
+          </div>
+          <div class="kpi">
+            <div class="label">ゆずき勝率</div>
+            <div class="value mono" id="rateYuzuki">0%</div>
+          </div>
+        </div>
+
+        <div class="split">
+          <span class="badge"><i class="dot red"></i>いつき</span>
+          <span class="badge"><i class="dot blue"></i>ゆずき</span>
+          <span class="badge mono" id="ratioText">0 : 0</span>
+        </div>
+
+        <p class="note">※勝率は合計100%になるように計算（試合0のときは両方0%）。</p>
+      </div>
+    </section>
+
+    <!-- =========================
+         Games
+         ========================= -->
+    <section class="card">
+      <div class="hd">
+        <h2>競技ごとの勝敗</h2>
+        <div class="hint">親指で押せる</div>
+      </div>
+      <div class="bd">
+        <div class="glist" id="glist"></div>
+        <p class="note">「勝ち/負け」ボタンは即加算＆ログも自動で残る（メモ無し）。</p>
+      </div>
+    </section>
+
+    <!-- =========================
+         Donut: ratio
+         ========================= -->
+    <section class="card">
+      <div class="hd">
+        <h2>勝ち負けの比率</h2>
+        <div class="hint">赤=いつき / 青=ゆずき</div>
+      </div>
+      <div class="bd">
+        <canvas id="donut" width="800" height="420" aria-label="勝ち負け比率"></canvas>
+        <div class="legend">
+          <span><i class="dot red"></i>いつき</span>
+          <span><i class="dot blue"></i>ゆずき</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         Log
+         ========================= -->
+    <section class="card">
+      <div class="hd">
+        <h2>最近の試合ログ</h2>
+        <div class="hint">メモ付き</div>
+      </div>
+      <div class="bd">
+        <div class="log-controls">
+          <select id="filterGame" class="select-black" style="flex:1; min-width: 180px;">
+            <option value="all">すべて表示</option>
+          </select>
+          <button class="btn mini ghost" id="clearLog">ログだけ消す</button>
+        </div>
+        <div class="log" id="log"></div>
+        <p class="note">ログは最大100件。データはこのブラウザに保存。</p>
+      </div>
+    </section>
+
+    <!-- =========================
+         Data management
+         ========================= -->
+    <section class="card">
+      <div class="hd">
+        <h2>データ管理</h2>
+        <div class="hint">要注意</div>
+      </div>
+      <div class="bd">
+        <button class="btn" id="resetAll" style="width:100%;">全データをリセット（勝敗・ログ全部削除）</button>
+        <p class="note">消したら戻せん。</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================
+       Bottom bar（＋記録だけ）
+       ========================= -->
+  <div class="bottom-bar">
+    <div class="bottom-inner">
+      <button class="btn primary" id="openAdd">＋ 1試合を記録（メモ付き）</button>
+    </div>
+  </div>
+
+  <!-- =========================
+       Modal：1試合の詳細記録
+       ========================= -->
+  <div class="modal-backdrop" id="backdrop" role="dialog" aria-modal="true" aria-label="試合を記録">
+    <div class="modal">
+      <div class="hd">
+        <h3>1試合を記録（いつき vs ゆずき）</h3>
+        <button class="btn mini ghost" id="closeAdd">閉じる</button>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="row2">
+            <div>
+              <label class="help">競技（白背景・黒文字）</label>
+              <select id="mGame" class="select-black"></select>
+            </div>
+            <div>
+              <label class="help">勝ったのはどっち？</label>
+              <select id="mWinner" class="select-black">
+                <option value="itsuki">いつき</option>
+                <option value="yuzuki">ゆずき</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="help">メモ（任意）</label>
+            <textarea id="mNote" placeholder="例：卓球 11-9、最後のサーブ良かった など"></textarea>
+          </div>
+
+          <div class="help">保存すると：競技別の勝敗＋サマリー＋比率グラフ＋ログが全部更新されます。</div>
+        </div>
+      </div>
+      <div class="ft">
+        <button class="btn" id="cancelAdd">キャンセル</button>
+        <button class="btn primary" id="saveMatch">保存する</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================
+       Fixed matchup
+       ========================= */
+    const PLAYER_A = "いつき";
+    const PLAYER_B = "ゆずき";
+
+    /* =========================
+       Games（その他あり）
+       ========================= */
+    const GAMES = [
+      "バスケ","サッカー","バッティング","卓球","バドミントン","テニス","バレー","ダーツ",
+      "アーチェリー","ビリヤード","エアホッケー","マリオカート","太鼓の達人","ワニワニパニック","ガンシューティング",
+      "その他"
+    ];
+
+    const STORAGE_KEY = "spotcha_1v1_tracker_mobile_v3_clean";
+
+    /* =========================
+       State: win=いつき勝ち / loss=ゆずき勝ち
+       ========================= */
+    function defaultState(){
+      const stats = {};
+      for(const g of GAMES) stats[g] = { win:0, loss:0 };
+      return { stats, log: [] };
+    }
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return defaultState();
+        const parsed = JSON.parse(raw);
+
+        const st = defaultState();
+
+        if(parsed?.stats){
+          for(const g of Object.keys(st.stats)){
+            const s = parsed.stats[g];
+            if(s && Number.isFinite(s.win) && Number.isFinite(s.loss)){
+              st.stats[g].win = Math.max(0, s.win|0);
+              st.stats[g].loss = Math.max(0, s.loss|0);
+            }
+          }
+        }
+
+        if(Array.isArray(parsed?.log)){
+          st.log = parsed.log.slice(0,100).filter(x => x && x.game && (x.winner==="itsuki"||x.winner==="yuzuki"));
+        }
+        return st;
+      }catch{
+        return defaultState();
+      }
+    }
+
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    let state = loadState();
+
+    /* =========================
+       Helpers
+       ========================= */
+    const $ = (sel, el=document) => el.querySelector(sel);
+    function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+
+    function totalItsuki(){ return Object.values(state.stats).reduce((a,s)=>a+s.win,0); }
+    function totalYuzuki(){ return Object.values(state.stats).reduce((a,s)=>a+s.loss,0); }
+    function totalMatches(){ return totalItsuki() + totalYuzuki(); }
+
+    function fmtPct(x){
+      if(!Number.isFinite(x)) return "0%";
+      const v = Math.round(x*10)/10;
+      return (v%1===0 ? v.toFixed(0) : v.toFixed(1)) + "%";
+    }
+
+    function niceDate(ts){
+      const d=new Date(ts);
+      const y=d.getFullYear();
+      const m=String(d.getMonth()+1).padStart(2,"0");
+      const day=String(d.getDate()).padStart(2,"0");
+      const hh=String(d.getHours()).padStart(2,"0");
+      const mm=String(d.getMinutes()).padStart(2,"0");
+      return `${y}/${m}/${day} ${hh}:${mm}`;
+    }
+
+    function escapeHtml(str){
+      return str
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    /* =========================
+       Rates (sum to 100)
+       ========================= */
+    function calcRates(){
+      const w = totalItsuki();
+      const l = totalYuzuki();
+      const t = w + l;
+
+      if(t === 0){
+        return { itsuki: 0, yuzuki: 0, w, l, t };
+      }
+      const itsukiRate = (w / t) * 100;
+      const yuzukiRate = 100 - itsukiRate; // ←合計100にする
+      return { itsuki: itsukiRate, yuzuki: yuzukiRate, w, l, t };
+    }
+
+    /* =========================
+       Render: header + summary
+       ========================= */
+    function renderHeader(){
+      $("#totalMatches").textContent = totalMatches();
+      $("#matchupLabel").textContent = `${PLAYER_A} VS ${PLAYER_B}`;
+    }
+
+    function renderSummary(){
+      const {itsuki, yuzuki, w, l} = calcRates();
+
+      $("#sumWins").textContent = w;
+      $("#sumLosses").textContent = l;
+
+      $("#rateItsuki").textContent = fmtPct(itsuki);
+      $("#rateYuzuki").textContent = fmtPct(yuzuki);
+
+      $("#ratioText").textContent = `${w} : ${l}`;
+    }
+
+    /* =========================
+       Render: game list
+       ========================= */
+    function renderGameList(){
+      const glist = $("#glist");
+      glist.innerHTML = "";
+
+      for(const game of GAMES){
+        const s = state.stats[game];
+        const w = s.win, l = s.loss;
+        const t = w + l;
+        const itsukiRate = (t===0) ? 0 : (w / t) * 100;
+
+        const div = document.createElement("div");
+        div.className = "gitem";
+        div.innerHTML = `
+          <div class="gitem-top">
+            <div class="gname">${game}</div>
+            <div class="nums">
+              <span>${PLAYER_A} <b class="mono">${w}</b></span>
+              <span>${PLAYER_B} <b class="mono">${l}</b></span>
+            </div>
+          </div>
+
+          <div class="rate" aria-label="勝率（いつき）">
+            <span class="bar"><i style="width:${clamp(itsukiRate,0,100)}%"></i></span>
+            <span class="pct mono">${fmtPct(itsukiRate)}</span>
+          </div>
+
+          <div class="gactions">
+            <button class="btn mini itsuki" data-act="itsuki" data-game="${game}">${PLAYER_A}勝ち＋</button>
+            <button class="btn mini yuzuki" data-act="yuzuki" data-game="${game}">${PLAYER_B}勝ち＋</button>
+            <button class="btn mini ghost" data-act="undo" data-game="${game}">戻す</button>
+          </div>
+        `;
+        glist.appendChild(div);
+      }
+
+      glist.querySelectorAll("button[data-act]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const act = btn.dataset.act;
+          const game = btn.dataset.game;
+          if(act==="itsuki") quickAdd(game, "itsuki");
+          if(act==="yuzuki") quickAdd(game, "yuzuki");
+          if(act==="undo") undoOne(game);
+        });
+      });
+    }
+
+    /* =========================
+       Add / Undo (ログも連動)
+       ========================= */
+    function quickAdd(game, winner){
+      if(winner==="itsuki") state.stats[game].win++;
+      else state.stats[game].loss++;
+
+      state.log.unshift({
+        id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
+        ts: Date.now(),
+        game,
+        winner,
+        note: ""
+      });
+      state.log = state.log.slice(0,100);
+
+      saveState();
+      renderAll();
+    }
+
+    function undoOne(game){
+      const idx = state.log.findIndex(x => x.game === game);
+      if(idx !== -1){
+        const item = state.log[idx];
+        if(item.winner==="itsuki" && state.stats[game].win>0) state.stats[game].win--;
+        if(item.winner==="yuzuki" && state.stats[game].loss>0) state.stats[game].loss--;
+        state.log.splice(idx,1);
+      }else{
+        if(state.stats[game].win>0) state.stats[game].win--;
+        else if(state.stats[game].loss>0) state.stats[game].loss--;
+      }
+      saveState();
+      renderAll();
+    }
+
+    /* =========================
+       Donut: red vs blue, sum=100
+       ========================= */
+    function drawDonut(){
+      const canvas = $("#donut");
+      const ctx = canvas.getContext("2d");
+
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * dpr);
+      canvas.height = Math.floor(rect.height * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+
+      const W = rect.width, H = rect.height;
+      ctx.clearRect(0,0,W,H);
+
+      const { itsuki, yuzuki, w, l, t } = calcRates();
+
+      const cx = W/2, cy = H/2;
+      const r = Math.min(W,H) * 0.33;
+      const ring = r * 0.42;
+
+      // base ring
+      ctx.lineWidth = ring;
+      ctx.strokeStyle = "rgba(255,255,255,.10)";
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+
+      if(t===0){
+        ctx.fillStyle = "rgba(234,240,255,.95)";
+        ctx.font = "900 16px Inter, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("まだ記録がないで", cx, cy-6);
+        ctx.fillStyle = "rgba(154,166,195,.95)";
+        ctx.font = "800 12px Inter, sans-serif";
+        ctx.fillText("1試合入れたら比率が出る", cx, cy+14);
+        return;
+      }
+
+      const start = -Math.PI/2;
+      const itsukiAngle = (itsuki/100) * Math.PI * 2;
+
+      // itsuki (red)
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--itsuki").trim();
+      ctx.beginPath(); ctx.arc(cx,cy,r,start,start+itsukiAngle); ctx.stroke();
+
+      // yuzuki (blue)
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--yuzuki").trim();
+      ctx.beginPath(); ctx.arc(cx,cy,r,start+itsukiAngle,start+Math.PI*2); ctx.stroke();
+
+      // center text
+      ctx.fillStyle = "rgba(234,240,255,.98)";
+      ctx.font = "900 18px Inter, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(`${PLAYER_A} ${fmtPct(itsuki)} / ${PLAYER_B} ${fmtPct(yuzuki)}`, cx, cy-2);
+
+      ctx.fillStyle = "rgba(154,166,195,.95)";
+      ctx.font = "800 12px Inter, sans-serif";
+      ctx.fillText(`${PLAYER_A} ${w} - ${PLAYER_B} ${l}（合計 ${t}）`, cx, cy+18);
+    }
+
+    /* =========================
+       Log render
+       ========================= */
+    function renderFilterOptions(){
+      const sel = $("#filterGame");
+      const current = sel.value || "all";
+      sel.innerHTML = `<option value="all">すべて表示</option>` + GAMES.map(g=>`<option value="${g}">${g}</option>`).join("");
+      sel.value = (current==="all" || GAMES.includes(current)) ? current : "all";
+    }
+
+    function renderLog(){
+      const filter = $("#filterGame").value;
+      const logEl = $("#log");
+
+      const items = state.log
+        .filter(x => filter==="all" ? true : x.game===filter)
+        .slice(0, 30);
+
+      if(items.length === 0){
+        logEl.innerHTML = `<div class="help">まだログがないで。「＋ 1試合を記録」か、競技カードのボタンで追加してみて。</div>`;
+        return;
+      }
+
+      logEl.innerHTML = items.map(x=>{
+        const winner = x.winner==="itsuki" ? PLAYER_A : PLAYER_B;
+        const loser  = x.winner==="itsuki" ? PLAYER_B : PLAYER_A;
+        const note = (x.note||"").trim();
+        return `
+          <div class="log-item">
+            <div class="left">
+              <div class="meta">${niceDate(x.ts)} / ${x.game}</div>
+              <div class="main">${winner}の勝ち（${winner} vs ${loser}）${note ? "：" + escapeHtml(note) : ""}</div>
+            </div>
+            <span class="tag"><strong>${winner}</strong> WIN</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    /* =========================
+       Modal
+       ========================= */
+    function openModal(){
+      $("#backdrop").style.display = "grid";
+      $("#mNote").focus();
+    }
+    function closeModal(){
+      $("#backdrop").style.display = "none";
+      $("#mNote").value = "";
+      $("#mWinner").value = "itsuki";
+      $("#mGame").value = GAMES[0];
+    }
+
+    function bindModal(){
+      $("#mGame").innerHTML = GAMES.map(g=>`<option value="${g}">${g}</option>`).join("");
+      $("#mGame").value = GAMES[0];
+
+      $("#openAdd").addEventListener("click", openModal);
+      $("#closeAdd").addEventListener("click", closeModal);
+      $("#cancelAdd").addEventListener("click", closeModal);
+
+      $("#backdrop").addEventListener("click", (e)=>{
+        if(e.target.id === "backdrop") closeModal();
+      });
+
+      $("#saveMatch").addEventListener("click", ()=>{
+        const game = $("#mGame").value;
+        const winner = $("#mWinner").value; // itsuki / yuzuki
+        const note = ($("#mNote").value || "").trim();
+
+        if(winner === "itsuki") state.stats[game].win++;
+        else state.stats[game].loss++;
+
+        state.log.unshift({
+          id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
+          ts: Date.now(),
+          game,
+          winner,
+          note
+        });
+        state.log = state.log.slice(0,100);
+
+        saveState();
+        closeModal();
+        renderAll();
+      });
+    }
+
+    /* =========================
+       Controls
+       ========================= */
+    function bindControls(){
+      $("#filterGame").addEventListener("change", renderLog);
+
+      $("#clearLog").addEventListener("click", ()=>{
+        const ok = confirm("ログだけ消すで？（勝敗の数字は残る）");
+        if(!ok) return;
+        state.log = [];
+        saveState();
+        renderAll();
+      });
+
+      $("#resetAll").addEventListener("click", ()=>{
+        const ok = confirm("全データ削除するで？（勝敗・ログ全部消える）");
+        if(!ok) return;
+        state = defaultState();
+        saveState();
+        renderAll();
+      });
+    }
+
+    /* =========================
+       Render all
+       ========================= */
+    function renderAll(){
+      renderHeader();
+      renderSummary();
+      renderGameList();
+      renderFilterOptions();
+      renderLog();
+      drawDonut();
+    }
+
+    window.addEventListener("resize", drawDonut);
+
+    /* =========================
+       Boot
+       ========================= */
+    $("#matchupLabel").textContent = `${PLAYER_A} VS ${PLAYER_B}`;
+    bindModal();
+    bindControls();
+    renderAll();
+  </script>
+</body>
+</html>
